@@ -1,3 +1,4 @@
+require('dotenv').config(); // ye .env file read karega
 let dns = require("dns");
 dns.setServers(["8.8.8.8", "1.1.1.1"]);
 const cors = require("cors");
@@ -54,7 +55,7 @@ app.use("/api/news",newsRouter);
 app.use("/api",videoRouter);
 
 let PORT = 3000;
-mongoose.connect(MONGO_URL).then(() => {
+mongoose.connect(process.env.MONGODB_URI).then(() => {
   app.listen(PORT, () => {
     console.log(`Server Listening At : http://localhost:${PORT}`);
   });

@@ -8,7 +8,11 @@ const videoSchema = new mongoose.Schema({
   videoUrl : {
     type:String,
     required:true,
-  }
+  },
+  lectureType:{
+    type:String,
+    required:true,
+  },
 })
 
 module.exports= mongoose.model("uploadVideo",videoSchema);

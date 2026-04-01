@@ -1,7 +1,8 @@
-let express = require("express");
-let upload = require("../MulterData")
-const { uploadVideo,getVideos } = require("../Controller/videoController");
-let videoRouter = express.Router();
+const { upload, uploadToCloudinary } = require("../MulterData");
+const express = require("express");
+const videoRouter = express.Router();
+const { uploadVideo } = require("../controller/videoController");
+const { getVideos } = require("../controller/videoController");
 
 videoRouter.post("/uploadVideo/:examType",upload.single("video"),uploadVideo)
 

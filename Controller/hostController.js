@@ -1,5 +1,12 @@
 let QuotesClass = require("../model/host/Quote");
+const {
+  upload,
+  cloudinary,
+  Readable,
+  uploadToCloudinary,
+} = require("../MulterData");
 let MockClass = require("../model/host/Mock");
+let lectureDetailsClass = require("../model/host/AddLectureDetails");
 let PaidMockClass = require("../model/host/PaidMock");
 let PaidMockDetailsClass = require("../model/host/PaidMockDetails");
 let QuestionClass = require("../model/host/AddQuestion");
@@ -16,27 +23,42 @@ exports.addQuoteController = async (req, res) => {
   res.json({ message: "Quote Submitted" });
 };
 exports.addRoadMapController = async (req, res) => {
-  let roadmapType = req.params.roadMapType;
-  console.log(req.file)
-  if (!roadmapType) {
-    return res.status(400).json({ message: "RoadMapType is Required" });
-  }
-  if (!req.file) {
-    return res
-      .status(400)
-      .json({ message: "Attached RoadMap File it is Required.." });
-  }
-  let roadMap = new RoadMapClass({ roadmapType, roadMapPdf:`/uploads/${req.file.filename}` });
-  roadMap.save();
-   res.status(200).json({
-      message: "RooadMap Added Successfully",
-      filename: req.file.filename,
+  try {
+    const roadmapType = req.params.roadMapType;
+
+    if (!roadmapType)
+      return res.status(400).json({ message: "RoadMapType is required" });
+
+    if (!req.file)
+      return res.status(400).json({ message: "RoadMap file is required" });
+
+    console.log("Received file:", req.file.originalname);
+
+    // Upload file to Cloudinary
+    const result = await uploadToCloudinary(req.file);
+
+    // Save details in MongoDB
+    const roadMap = new RoadMapClass({
+      roadmapType,
+      roadMapPdf: result.secure_url, // Cloudinary URL
+      cloudinaryId: result.public_id, // Cloudinary public_id
     });
+
+    await roadMap.save();
+
+    res.status(200).json({
+      message: "RoadMap uploaded successfully",
+      roadMapPdf: result.secure_url,
+    });
+  } catch (err) {
+    console.error("Error in addRoadMapController:", err);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 exports.getRoadMapWithCondition = async (req, res) => {
   let roadMapType = req.params.roadMapType;
-  let roadMap = await RoadMapClass.find({roadmapType:roadMapType});
+  let roadMap = await RoadMapClass.find({ roadmapType: roadMapType });
   res.json(roadMap);
 };
 exports.getRoadMapWithoutCondition = async (req, res) => {
@@ -60,7 +82,7 @@ exports.getPaidMockListsController = async (req, res) => {
   console.log("MockName at Backend : ", examName);
   console.log("Collection Name :", PaidQuestionClass.collection.name);
   console.log("DB Name :", PaidQuestionClass.db.name);
-  let questions = await PaidQuestionClass.find({examName: examName });
+  let questions = await PaidQuestionClass.find({ examName: examName });
   console.log("MockLists : ", questions);
   res.json(questions);
 };
@@ -70,6 +92,20 @@ exports.addMockController = async (req, res) => {
   let mock = await MockClass({ name, noOfMock });
   await mock.save();
   res.json({ message: "Mock Added SuccessFully" });
+};
+exports.addLectureDetailsController = async (req, res) => {
+  console.log("Lecture Details Backend Me Aaya", req.body);
+  let { examName, lectureType } = req.body;
+  let addLecture = await lectureDetailsClass({ examName, lectureType });
+  await addLecture.save();
+  res.json({ message: "Lecture Details Added SuccessFully" });
+};
+exports.getLectureDetailsController = async (req, res) => {
+  let examName = req.params.examName;
+  let lectures = await lectureDetailsClass.find({
+    examName: examName,
+  });
+  res.json(lectures);
 };
 exports.addPaidMockController = async (req, res) => {
   let { name, noOfMock } = req.body;

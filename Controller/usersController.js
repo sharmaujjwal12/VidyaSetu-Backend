@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 exports.loginController = async(req,res)=>{
   let {email,password} = req.body;
   let user =await VidyaSetu.findOne({email:email});
+  let role = user.role;
   user.isLoggedIn = true;
   await user.save();
   // console.log("IsLogged In : ",user.isLoggedIn)
@@ -19,7 +20,7 @@ exports.loginController = async(req,res)=>{
   req.session.isLoggedIn = true;
   req.session.save(()=>{
     let value = req.session;
-    res.json({value,email});
+    res.json({value,email,role});
   })
 }
 
@@ -80,6 +81,11 @@ exports.signUpController = [
     .withMessage("Please Select a Gender")
     .isIn(["male","female","other"])
     .withMessage("Invalid User Type"),
+  check("role")
+    .notEmpty()
+    .withMessage("Please Select a Gender")
+    .isIn(["user","host"])
+    .withMessage("Invalid Role Type"),
   // check("term")
   //   .notEmpty()
   //   .withMessage("Please Accept a Terms")
@@ -90,7 +96,7 @@ exports.signUpController = [
   //     return true;
   //   }),
   (req, res, next) => {
-    const { firstName, lastName, password, confirmPassword, email, gender } =
+    const { firstName, lastName, password, confirmPassword, email, gender,role } =
       req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -104,6 +110,7 @@ exports.signUpController = [
           password,
           confirmPassword,
          gender,
+         role,
         },
       });
     }
@@ -115,6 +122,7 @@ exports.signUpController = [
         email,
         password: hashedPassword,
         gender,
+        role,
       });
       user.save()
         .then(() => {
