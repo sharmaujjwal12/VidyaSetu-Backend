@@ -1,8 +1,8 @@
 const { upload, uploadToCloudinary } = require("../MulterData");
 const express = require("express");
 const videoRouter = express.Router();
-const { uploadVideo } = require("../controller/videoController");
-const { getVideos } = require("../controller/videoController");
+const { uploadVideo } = require("../Controller/videoController");
+const { getVideos } = require("../Controller/videoController");
 
 videoRouter.post("/uploadVideo/:examType",upload.single("video"),uploadVideo)
 
