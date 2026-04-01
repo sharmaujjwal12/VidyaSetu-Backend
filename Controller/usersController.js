@@ -2,27 +2,48 @@ const { check, validationResult } = require("express-validator");
 const VidyaSetu = require("../model/user");
 const bcrypt = require("bcryptjs");
 
-exports.loginController = async(req,res)=>{
-  let {email,password} = req.body;
-  let user =await VidyaSetu.findOne({email:email});
-  let role = user.role;
-  user.isLoggedIn = true;
-  await user.save();
-  // console.log("IsLogged In : ",user.isLoggedIn)
-  console.log("User At Server : ",user);
-  if(!user){
-    return res.json({message:"User Doesn't Exists",errors:["Invalid Email Or Password"],oldInput:{email},isLoggedIn:false})
+exports.loginController = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // 1️⃣ Find user
+    const user = await VidyaSetu.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        message: "User doesn't exist",
+        errors: ["Invalid Email or Password"],
+        oldInput: { email },
+        isLoggedIn: false,
+      });
+    }
+
+    // 2️⃣ Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({
+        message: "Invalid Password",
+        errors: ["Invalid Password"],
+        oldInput: { email },
+        isLoggedIn: false,
+      });
+    }
+
+    // 3️⃣ Update session and login status
+    user.isLoggedIn = true;
+    await user.save();
+
+    req.session.isLoggedIn = true;
+    req.session.save(() => {
+      const value = req.session;
+      res.json({ value, email: user.email, role: user.role });
+    });
+
+    console.log("User logged in:", user);
+  } catch (err) {
+    console.error("LoginController error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
-    const isMatch = await bcrypt.compare(password,user.password);
-    if(!isMatch){
-      return res.json({message:"Invalid Password",isLoggedIn:false,errors:["Invalid Password"],oldInput:{email}})
-  }
-  req.session.isLoggedIn = true;
-  req.session.save(()=>{
-    let value = req.session;
-    res.json({value,email,role});
-  })
-}
+};
 
 exports.logoutController = async (req,res)=>{
   let {email} = req.body;
