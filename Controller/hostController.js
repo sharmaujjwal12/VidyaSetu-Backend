@@ -71,8 +71,8 @@ exports.getQuoteController = async (req, res) => {
   res.json(quote);
 };
 exports.getMockListsController = async (req, res) => {
-  let examName = req.params.examName.trim();
   console.log("MockName at Backend : ", examName);
+  let examName = req.params.examName;
   let questions = await AddQuestion.find({ examName: examName });
   console.log("MockLists : ", questions);
   res.json(questions);

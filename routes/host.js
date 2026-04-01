@@ -8,7 +8,7 @@ hostRouter.get("/getMock",getMockController);
 hostRouter.get("/getPaidMock",getPaidMockController);
 hostRouter.get("/getMockDetails/:examType",getMockDetailsController);
 hostRouter.get("/getPaidMockDetails/:examType",getPaidMockDetailsController);
-hostRouter.get("/getMockLists/:examName",getPaidMockListsController);
+hostRouter.get("/getMockLists/:examName",getMockListsController);
 hostRouter.get("/getPaidMockLists/:examName",getPaidMockListsController);
 hostRouter.get("/getRoadMap/:roadMapType",getRoadMapWithCondition);
 hostRouter.get("/getRoadMap",getRoadMapWithoutCondition);
