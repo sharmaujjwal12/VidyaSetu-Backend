@@ -71,11 +71,22 @@ exports.getQuoteController = async (req, res) => {
   res.json(quote);
 };
 exports.getMockListsController = async (req, res) => {
-  console.log("MockName at Backend : ", examName);
-  let examName = req.params.examName;
-  let questions = await AddQuestion.find({ examName: examName });
-  console.log("MockLists : ", questions);
-  res.json(questions);
+  try {
+    const examName = (req.params.examName || "").trim();
+    console.log("MockName at Backend:", examName);
+
+    if (!examName) {
+      return res.status(400).json({ error: "examName param missing" });
+    }
+
+    const questions = await AddQuestion.find({ examName });
+    console.log("Questions found:", questions.length);
+
+    res.json(questions);
+  } catch (err) {
+    console.error("Error in getMockListsController:", err);
+    res.status(500).json({ error: "Server error" });
+  }
 };
 exports.getPaidMockListsController = async (req, res) => {
   let examName = req.params.examName.trim();
