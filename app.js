@@ -53,6 +53,9 @@ app.use("/api",paymentRouter)
 app.use("/api", hostRouter);
 app.use("/api/news",newsRouter);
 app.use("/api",videoRouter);
+app.get("/", (req, res) => {
+  res.send("VidyaSetu Backend Running 🚀");
+});
 
 const PORT = process.env.PORT || 3000;
 mongoose.connect(process.env.MONGODB_URI).then(() => {
