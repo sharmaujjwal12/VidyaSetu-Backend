@@ -88,14 +88,21 @@ exports.getMockListsController = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
 exports.getPaidMockListsController = async (req, res) => {
-  let examName = req.params.examName.trim();
-  console.log("MockName at Backend : ", examName);
-  console.log("Collection Name :", PaidQuestionClass.collection.name);
-  console.log("DB Name :", PaidQuestionClass.db.name);
-  let questions = await PaidQuestionClass.find({ examName: examName });
-  console.log("MockLists : ", questions);
-  res.json(questions);
+  try {
+    let examName = req.params.examName.trim();
+    console.log("Fetching Paid Questions for Exam: ", examName);
+
+    // MongoDB se actual questions fetch karo
+    let questions = await PaidQuestionClass.find({ examName: examName });
+
+    console.log("Questions fetched: ", questions);
+    res.json(questions);  // ye frontend ko array of objects bhejega
+  } catch (err) {
+    console.error("Error fetching paid questions:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
 exports.addMockController = async (req, res) => {
