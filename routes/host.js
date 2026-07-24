@@ -16,8 +16,12 @@ hostRouter.post("/addQuote",addQuoteController);
 hostRouter.post("/addMockDetails",addMockDetailsController);
 hostRouter.post("/addPaidMockDetails",addPaidMockDetailsController);
 hostRouter.post("/deleteMock/:id",deleteMockController);
-hostRouter.post("/deletePaidMock/:id",deletePaidMockController);
+hostRouter.post("/deletePaidMock/:id", (req,res,next)=>{
+  console.log("DELETE PAID MOCK ROUTE HIT");
+  next();
+}, deletePaidMockController);
 hostRouter.post("/addMock",addMockController);
+console.log("HOST ROUTES LOADED");
 hostRouter.post("/addLectureDetails",addLectureDetailsController);
 hostRouter.get("/getLectureDetails/:examName",getLectureDetailsController);
 hostRouter.post("/addPaidMock",addPaidMockController);
