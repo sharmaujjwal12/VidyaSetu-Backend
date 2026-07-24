@@ -131,7 +131,7 @@ exports.deleteMockController = async (req, res) => {
   console.log(id);
   console.log("Id At Delete : ", id);
   let mock = await MockClass.findByIdAndDelete(id);
-  res.json({ message: "Mock Deleted SuccessFully", mock });
+  res.json({ message: "Mock Deleted SuccessFully Radha", mock });
 };
 
 exports.editMockController = async (req, res) => {
