@@ -1,7 +1,7 @@
 let express = require("express");
 const { upload, uploadToCloudinary } = require("../MulterData");
 let hostRouter = express.Router();
-let {addQuoteController,getQuoteController,addMockController,getMockController,deleteMockController,editMockController,addQuestionController,getMockListsController,addMockDetailsController, getMockDetailsController,addRoadMapController, getRoadMapWithCondition, getRoadMapWithoutCondition,addPaidMockController,editPaidMockController,getPaidMockController,addPaidMockDetailsController, getPaidMockDetailsController,addPaidQuestionController,getPaidMockListsController,addLectureDetailsController,getLectureDetailsController} = require("../Controller/hostController")
+let {addQuoteController,getQuoteController,addMockController,getMockController,deleteMockController,editMockController,addQuestionController,getMockListsController,addMockDetailsController, getMockDetailsController,addRoadMapController, getRoadMapWithCondition, getRoadMapWithoutCondition,addPaidMockController,editPaidMockController,getPaidMockController,addPaidMockDetailsController, getPaidMockDetailsController,addPaidQuestionController,getPaidMockListsController,addLectureDetailsController,getLectureDetailsController, deletePaidMockController} = require("../Controller/hostController")
 
 hostRouter.get("/getQuote",getQuoteController);
 hostRouter.get("/getMock",getMockController);
@@ -16,6 +16,7 @@ hostRouter.post("/addQuote",addQuoteController);
 hostRouter.post("/addMockDetails",addMockDetailsController);
 hostRouter.post("/addPaidMockDetails",addPaidMockDetailsController);
 hostRouter.post("/deleteMock/:id",deleteMockController);
+hostRouter.post("/deletePaidMock/:id",deletePaidMockController);
 hostRouter.post("/addMock",addMockController);
 hostRouter.post("/addLectureDetails",addLectureDetailsController);
 hostRouter.get("/getLectureDetails/:examName",getLectureDetailsController);
