@@ -144,6 +144,12 @@ exports.editMockController = async (req, res) => {
   );
   res.json({ message: "Mock Updated SuccessFully", mock });
 };
+exports.deletePaidMockController = async (req, res) => {
+  let id = req.params.id;
+  console.log("Backend Me PAID Mock :",id);
+  let mock = await PaidMockClass.findByIdAndDelete(id);
+  res.json({ message: "Paid Mock Deleted SuccessFully", mock });
+};
 exports.editPaidMockController = async (req, res) => {
   let { id } = req.params;
   let { noOfMock } = req.body;
